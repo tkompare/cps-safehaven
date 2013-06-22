@@ -290,7 +290,14 @@
 									if(numresults === 1)
 									{
 										resultHTML += '<div class=padded><p>This summer\'s program begins on July 1 and runs through August 13, Monday - Friday from 10:00 A.M. - 2:00 P.M. All activities and meals (breakfast and lunch are provided) are <b>free for CPS students</b>.</p></div>';
-										resultHTML += '<div><h4>Safe Havens within '+$('#address-radius').val()+' miles:</h4></div>';
+										if(Number($('#address-radius').val()) > 1)
+										{
+											resultHTML += '<div><h4>Safe Havens within '+$('#address-radius').val()+' miles:</h4></div>';
+										}
+										else
+										{
+											resultHTML += '<div><h4>Safe Havens within '+$('#address-radius').val()+' mile:</h4></div>';
+										}
 										resultHTML += '<div class="accordion" id="accordion">';
 									}
 									resultHTML += '<div class="accordion-group">';
@@ -319,13 +326,14 @@
 							if(numresults > 0)
 							{
 								resultHTML += '</div>';
-								resultHTML += '<div class=marginb2><button id=newsearch class="btn btn-warning btn-small">New Search</button></div>';
 							}
 							else
 							{
-								resultHTML += '<p>We\'re sorry. We could locate a Safe Haven location within your search.</p>';
+								resultHTML += '<h4>We\'re sorry. We could locate a Safe Haven location within your search radius. Try increasing distance.</h4>';
 							}
+							resultHTML += '<div class=marginb2><button id=newsearch class="btn btn-warning btn-small">New Search</button></div>';
 							$('#results').html(resultHTML);
+							document.getElementById('before-map-fluid').scrollIntoView();
 						}
 						else
 						{
