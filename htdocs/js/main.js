@@ -208,7 +208,7 @@
 					Default.SafeHavens[safehavenid].closeInfoBox(Map.Map,Default.SafeHavens[safehavenid].marker,Default.SafeHavens[safehavenid].infobox);
 					Map.Map.panToBounds(Default.Circle.getBounds());
 					Map.Map.fitBounds(Default.Circle.getBounds());
-					if(Number(Default.Circle.getRadius()) !== 6 && Number(Default.Circle.getRadius()) !== 3)
+					if(Number($('#address-radius').val()) !== 6 && Number($('#address-radius').val()) !== 3)
 					{
 						Map.Map.setZoom((Map.Map.getZoom() + 1));
 					}
