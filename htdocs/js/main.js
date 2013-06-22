@@ -7,11 +7,9 @@
 			// The map's DOM object ID
 			domid:'map',
 			// Start center latutude of the Google map
-			//lat:41.875,
-			lat:41.7265134,
+			lat:41.875,
 			// Start center longitude of the Google map
-			//lng:-87.6425,
-			lng:-87.6044213,
+			lng:-87.6425,
 			// The TkMap styles wanted
 			styles:'grey minlabels',
 			// Initial zoom level for the Google map
@@ -64,7 +62,8 @@
 						position: this.SafeHavens[i].latlng,
 						map: Map.Map,
 						icon:'img/orange.png',
-						shadow:'img/msmarker.shadow.png'
+						shadow:'img/msmarker.shadow.png',
+						clickable:false
 					});
 					// Info boxes
 					var phone = String(this.SafeHavens[i].data.phone).replace(/[^0-9]/g,'');
@@ -179,6 +178,15 @@
 			$('#address').show();
 		});
 		
+		// Learn More button
+		$('#start-learn').click(function(){
+			document.getElementById('learn').scrollIntoView();
+		});
+		
+		$('#learn-start,#learn-end').click(function(){
+			document.getElementById('before-map-fluid').scrollIntoView();
+		});
+		
 		// Accordion toggle listener
 		$('body').on('click','.accordion-toggle',function(){
 			var safehavenid = String($(this).attr('id')).replace(/[^0-9]/g,'');
@@ -251,7 +259,8 @@
 							Default.AddressMarker = new google.maps.Marker({
 								position:results[0].geometry.location,
 								map: Map.Map,
-								icon:'/img/close.gif'
+								icon:'/img/close.gif',
+								clickable:false
 							});
 							Map.Map.panTo(results[0].geometry.location);
 							var numresults = 0;
@@ -269,10 +278,10 @@
 										resultHTML += '<div class="accordion" id="accordion">';
 									}
 									resultHTML += '<div class="accordion-group">';
-										resultHTML += '<div class="accordion-heading"><a id="accordion-toggle-'+i+'" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-'+i+'">';
+										resultHTML += '<div class="accordion-heading" style="background-color:#ddd;"><a id="accordion-toggle-'+i+'" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-'+i+'" style="color:#358">';
 											resultHTML += Default.SafeHavens[i].data.name+'&nbsp;&nbsp;(more info)';
 										resultHTML += '</a></div>';
-										resultHTML += '<div id="collapse-'+i+'" class="accordion-body collapse"><div class="accordion-inner">';
+										resultHTML += '<div id="collapse-'+i+'" class="accordion-body collapse"><div class="accordion-inner" style="background-color:#eee;">';
 											resultHTML += Default.SafeHavens[i].data.address+'<br>Chicago, IL '+Default.SafeHavens[i].data.postalcode+'<br>';
 											var phone = String(Default.SafeHavens[i].data.phone).replace(/[^0-9]/g,'');
 											var phonetext = '';
