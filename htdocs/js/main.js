@@ -70,13 +70,13 @@
 					var phonetext = '';
 					if(this.isPhone)
 					{
-						phonetext = '<a href="tel:+1'+phone.slice(-10)+'" style="color:white"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
+						phonetext = '<a href="tel:+1'+phone.slice(-10)+'" style="color:orange"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
 					}
 					else
 					{
 						phonetext = phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4);
 					}
-					this.SafeHavens[i].infoboxtext = '<div class="infoBox" style="border:2px solid rgb(0,0,0); margin-top:8px; background:rgb(1,82,137); padding:5px; color:white; font-size:90%;">'+
+					this.SafeHavens[i].infoboxtext = '<div class="infoBox" style="border:2px solid rgb(0,0,0); margin-top:8px; background:#333; padding:5px; color:white; font-size:90%;">'+
 					this.SafeHavens[i].data.name+'<br>'+
 					this.SafeHavens[i].data.address+'<br>Chicago, IL '+this.SafeHavens[i].data.postalcode+'<br>'+
 					phonetext+
@@ -187,6 +187,24 @@
 			document.getElementById('before-map-fluid').scrollIntoView();
 		});
 		
+		$('body').on('click','#newsearch',function(){
+			$('#results').hide();
+			$('#address').show();
+			$('#results').html('');
+			for(var i in Default.SafeHavens)
+			{
+				Default.SafeHavens[i].infobox.close(Map.Map,Default.SafeHavens[i].marker);
+			}
+			Default.Circle.setVisible(false);
+			Default.Circle = null;
+			Default.AddressMarker.setVisible(false);
+			Default.AddressMarker = null;
+			var mapcenter = new google.maps.LatLng(Default.lat,Default.lng);
+			Map.Map.panTo(mapcenter);
+			Map.Map.setZoom(Default.zoom);
+			document.getElementById('before-map-fluid').scrollIntoView();
+		});
+		
 		// Accordion toggle listener
 		$('body').on('click','.accordion-toggle',function(){
 			var safehavenid = String($(this).attr('id')).replace(/[^0-9]/g,'');
@@ -282,19 +300,20 @@
 											resultHTML += Default.SafeHavens[i].data.name+'&nbsp;&nbsp;(more info)';
 										resultHTML += '</a></div>';
 										resultHTML += '<div id="collapse-'+i+'" class="accordion-body collapse"><div class="accordion-inner" style="background-color:#eee;">';
+											resultHTML += Default.SafeHavens[i].data.pastor+'<br>';
 											resultHTML += Default.SafeHavens[i].data.address+'<br>Chicago, IL '+Default.SafeHavens[i].data.postalcode+'<br>';
 											var phone = String(Default.SafeHavens[i].data.phone).replace(/[^0-9]/g,'');
 											var phonetext = '';
 											if(Default.isPhone)
 											{
-												phonetext = '<a href="tel:+1'+phone.slice(-10)+'"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
+												phonetext = '<a href="tel:+1'+phone.slice(-10)+'" style="color:#f87217"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
 											}
 											else
 											{
 												phonetext = phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4);
 											}
 											resultHTML += phonetext+'<br>';
-											resultHTML += 'Contact: '+Default.SafeHavens[i].data.pastor;
+											resultHTML += '<small>(call for registration information)</small>';
 										resultHTML += '</div></div>';
 									resultHTML += '</div>';
 								}
@@ -302,6 +321,7 @@
 							if(numresults > 0)
 							{
 								resultHTML += '</div>';
+								resultHTML += '<div class=marginb2><button id=newsearch class="btn btn-warning btn-small">New Search</button></div>';
 							}
 							else
 							{
