@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+	<meta charset=utf-8>
+	<meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1 minimum-scale=1">
+	<meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1" />
+	<link rel="icon" href="img/favicon.ico" type=”image/x-icon”>
+	<link rel="apple-touch-icon-precomposed" href="img/icon.png" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link href="css/bootstrap.min.css" rel=stylesheet media=screen>
+	<link href="css/bootstrap-responsive.min.css" rel=stylesheet>
+	<style>
+		div.adp-list td{padding-top:0.2em;padding-bottom:0.2em}
+		.adp-list{border-radius:6px}
+		.adp-listheader{font-size:1.3em}
+		.adp-listinfo b{padding-left:0.2em;color:#2222cc;text-decoration:underline;}
+		.adp-listsel{background-color:#015289;color:#fafafa;border-radius:6px}
+		.adp-listsel b{font-weight:normal;color:#fafafa;text-decoration:none;}
+		body {padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px}
+		body,#the-map{background-color:#333}
+		#div-footer a{color:orange}
+		#before-map-fluid{background-color:#fafafa}
+		#help p{color:#ddd}
+		#help b{color:#fff}
+		#map img{max-width:none}
+		.padded{padding-left:10px;padding-right:10px}
+		.center{text-align:center}
+		.marginb2{margin-bottom:2em}
+		.margint1{margin-top:1em}
+		.margin2{margin-bottom:2em;margin-top:2em}
+		#grp-school,#grp-time,#grp-travel,#grp-mylocation,#grp-summary,#sick,.adp-warnbox,.adp-legal{display:none}
+		@media only screen and (min-width:768px) {
+			#directions,#summary-go{position:relative;left:-2em}
+			#timepicker,#date-btns,#time-btns{margin-bottom:2em;margin-top:2em}
+			#help,#intro-text{padding-left:30px;padding-right:30px;font-size:112%;line-height:150%}
+		}
+		@media only screen and (max-width:767px) {
+			#interbutton{margin-bottom:2em;margin-top:2em}
+			#leaverightnow{margin-top:1em}
+			#help{padding-left:15px;padding-right:15px;}
+		}
+		.adp-directions{width:100%}
+		.adp-text{padding-left:2em}
+		.lead{margin-bottom:0.375em}
+		a[href^="tel:"]:before {
+			content: "\260E";
+			display: block;
+			margin-right: 0.5em;
+		}
+	</style>
+	<title>Safe Haven, Safe Summer</title>
+</head>
+<body>
+	<div id=before-map-fluid class=row-fluid>
+		<div id=before-map class="span12">
+			<h2 class="center">Safe Haven, Safe Summer</h2>
+			<noscript><p class=center><strong class="label label-important">We're sorry. You'll need to turn on Javascript to use this web site.</strong></p></noscript>
+			<div id=start>
+				<div class="span10 offset1">
+					<p class="center padded">Safe Haven is a CPS collaboration that gives Chicago's children the opportunity for a safe, productive summer filled with activities to enrich their development. All activities and meals (breakfast and lunch are provided) are <b>free for CPS students</b>.</p>
+				</div>
+				<div id=grp-start class="control-group center padded">
+					<button id=start-find class="btn btn-large btn-primary margint1">Find a Location</button>
+					<button id=start-learn class="btn btn-large margint1">Learn More</button>
+				</div>
+			</div>
+			<div id=address>
+				<div id=grp-address class="control-group center padded margin2">
+					<h4>Where are you?&nbsp;&nbsp;<button id=address-gps class="btn btn-inverse btn-small" type=button>Find Me</button></h4>
+					<div class=controls>
+						<input id=address-input class=span10 type=text placeholder="Enter an address" />
+					</div>
+					<h4>Search for locations within:</h4>
+					<select id=address-radius class=span2>
+						<option value="1">1 mile</option>
+						<option value="2" selected=selected>2 miles</option>
+						<option value="3">3 miles</option>
+						<option value="4">4 miles</option>
+						<option value="5">5 miles</option>
+						<option value="6">6 miles</option>
+					</select>
+					<div class="center margin2">
+						<button id=address-search class="btn btn-large btn-primary">Search</button><br>
+					</div>
+				</div>
+			</div>
+			<div id=results class="span10 offset1 center">
+			
+			</div>
+		</div>
+	</div>
+	<div id=div-map class=row-fluid>
+		<div id=the-map class=span12>
+			<div id=map-width style="display:inline-block; position:relative; width:100%;">
+				<div id=map-ratio style="margin-top:300px;">
+					<div id=map style="position:absolute; top:0; bottom:0; left:0; right:0;">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id=div-footer class=row-fluid>
+		<footer class=padded style="background-color:#333;color:white;overflow:hidden">
+			<div class="span4 margint1">
+				<p><a href="http://www.cps.edu/Programs/Academic_and_enrichment/Summer_school/Pages/SafeHavenSafeSummer.aspx" target="_blank">Chicago Public Schools</a></p>
+				<p>
+					<a href="https://twitter.com/share" class="twitter-share-button" data-text="Find a @ChiPubSchools Safe Haven program near you." data-url="http://safehaven.go2school.org" data-related="tomkompare:Volunteer Civic Developer,chipubschools:Offical Account of CPS,opengovchicago:A meetup group for government and community members" data-lang="en" data-size="small" data-count="none">Tweet</a>
+					&nbsp;&nbsp;<span class="g-plusone" data-size="medium" data-annotation="none"></span>
+				</p>
+			</div>
+			<div class="span8 margint1">
+				<p class=pull-right><small>This was not developed by
+					the Chicago Public Schools (CPS) and CPS makes no representations as to the 
+					accuracy of the information provided by this map application. 
+					Built by
+					<a href="http://about.me/tomkompare" target="_blank">Tom Kompare</a>, 
+					in collaboration with <a href="http://www.meetup.com/OpenGovChicago/" target="_blank"> 
+					Open Gov Chicago</a>. Hosted by the 
+					<a href="http://www.smartchicagocollaborative.org/" target="_blank"> Smart Chicago 
+					Collaborative</a>.
+				</small></p>
+			</div>
+			<div class=span11>
+				<hr>
+				<div id=help>
+					<a id=help-start>Back</a>
+					<p class="margint1 lead">More Information</p>
+					<p>The Safe Haven program is a collaboration that gives Chicago's children the opportunity for a safe, productive summer filled with programs and activities to enrich their development.</p>
+					<p>This summer's program begins on July 1 and runs through August 13. The hours are Monday-Friday from 10 a.m. – 2 p.m., and all activities and meals (breakfast and lunch are provided at Safe Haven locations) are free for CPS students.</p>
+					<p>Children who take advantage of Safe Haven participate in the arts, cultural enrichment programs, and social emotional learning that builds self-esteem and improves conflict resolution skills. Safe Haven also acts as an educational bridge from one school year to the next, as students are exposed to many academic programs and have the opportunity to be mentored by caring adults from their surrounding church communities.</p>
+					<p>For general information on the 2013 Safe Haven summer program, call the CPS Office of Faith-Based Initiatives at (773) 553-2500.</p>
+					<p class="margint1 lead">About the Author</p>
+					<p><a href="http://about.me/tomkompare" target="_blank">Tom Kompare</a> learned about this Program while talking to a person who works at CPS. He thought he should make a web accessible application to help CPS families locate a nearby program.</p>
+					<p>Tom believes in sharing so strongly, that the code behind this site is freely available, under <a href="https://github.com/tkompare/go2school-cps-en/blob/master/LICENSE.TXT" target="_blank">The MIT license</a>, to anyone who may want to implement this in their school district. <a href="http://github.com/tkompare/go2school-cps-en/" target="_blank">You may find the code here</a>. If you or your school district needs help getting Go2School up and running, <a href="http://about.me/tomkompare" target="_blank">feel free to contact Tom</a>.</p>
+					<p class="margint1 lead">Disclaimer</p>
+					<p>We make no representations or warranties regarding the accuracy or completeness of any content or the product. We disclaim all warranties in connection with the content and the product, and will not be liable for any damage or loss resulting from your use of the content or the product.</p>
+					<p><i>Google&reg; Walking Directions Disclaimer</i>: Walking directions are in beta. Use caution – Routes may be missing sidewalks or pedestrian paths.</p>
+					<a id=help-end>Back</a><br><br>
+				</div>
+			</div>
+		</footer>
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.9.0.min.js"><\/script>')</script>
+	<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCtCkkIUFPAWpAbARZdRYmRfgTrQqywNjk&libraries=geometry&sensor=true"></script>
+	<script src="js/share.js"></script>
+	<script src="js/modernizr.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/tkmap.4.0.0.js"></script>
+	<script src="js/infobox.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>
