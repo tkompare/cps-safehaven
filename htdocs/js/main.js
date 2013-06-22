@@ -208,7 +208,6 @@
 		// Accordion toggle listener
 		$('body').on('click','.accordion-toggle',function(){
 			var safehavenid = String($(this).attr('id')).replace(/[^0-9]/g,'');
-			console.log('Click: '+Default.SafeHavens[safehavenid].data.name+' | '+$(this).attr('class')+' | '+$('#collapse-'+safehavenid).attr('class'));
 			if($(this).attr('class').match(/collapse/) !== null || $('#collapse-'+safehavenid).attr('class').match(/in/) === null)
 			{
 				for(var i in Default.SafeHavens)
@@ -288,7 +287,6 @@
 								if(Default.Circle.contains(Default.SafeHavens[i].latlng))
 								{
 									numresults++;
-									console.log('Found: ('+numresults+')'+Default.SafeHavens[i].data.name);
 									if(numresults === 1)
 									{
 										resultHTML += '<div class=padded><p>This summer\'s program begins on July 1 and runs through August 13, Monday - Friday from 10:00 A.M. - 2:00 P.M. All activities and meals (breakfast and lunch are provided) are <b>free for CPS students</b>.</p></div>';
