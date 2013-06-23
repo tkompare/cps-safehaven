@@ -70,21 +70,10 @@
 						clickable:false
 					});
 					// Info boxes
-					var phone = String(this.SafeHavens[i].data.phone).replace(/[^0-9]/g,'');
-					var phonetext = '';
-					if(this.isPhone)
-					{
-						phonetext = '<a href="tel:+1'+phone.slice(-10)+'" style="color:orange"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
-					}
-					else
-					{
-						phonetext = phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4);
-					}
 					this.SafeHavens[i].infoboxtext = '<div class="infoBox" style="border:2px solid rgb(0,0,0); margin-top:8px; background:#333; padding:5px; color:white; font-size:90%;">'+
 					this.SafeHavens[i].data.name+'<br>'+
-					this.SafeHavens[i].data.address+'<br>Chicago, IL '+this.SafeHavens[i].data.postalcode+'<br>'+
-					phonetext+
-					'<br></div>';
+					this.SafeHavens[i].data.address+'<br>Chicago, IL '+this.SafeHavens[i].data.postalcode+
+					'</div>';
 					var options = this.infoboxoptions;
 					options.content = this.SafeHavens[i].infoboxtext;
 					// Make the info box
@@ -189,6 +178,10 @@
 		
 		$('#learn-start,#learn-end').click(function(){
 			document.getElementById('before-map-fluid').scrollIntoView();
+		});
+		
+		$('body').on('click','a[href^="tel:"]',function(){
+			_gaq.push(['_trackEvent', 'Phone Call Attempt', 'Click', $(this).attr('id')]);
 		});
 		
 		$('body').on('click','#newsearch',function(){
@@ -334,7 +327,7 @@
 											var phonetext = '';
 											if(Default.isPhone)
 											{
-												phonetext = '<a href="tel:+1'+phone.slice(-10)+'" style="color:#f87217"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
+												phonetext = '<a id="'+Default.SafeHavens[i].data.name+' '+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'" href="tel:+1'+phone.slice(-10)+'" style="color:#f87217"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
 											}
 											else
 											{
