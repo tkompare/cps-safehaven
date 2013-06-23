@@ -59,7 +59,7 @@
 			</div>
 			<div id=address>
 				<div id=grp-address class="control-group center padded margin2">
-					<h4>Where are you?&nbsp;&nbsp;<button id=address-gps class="btn btn-inverse btn-small" type=button>Find Me</button></h4>
+					<h4>Where are you?<span id=findme-span></span></h4>
 					<div class=controls>
 						<input id=address-input class=span10 type=text placeholder="Enter an address" />
 					</div>
@@ -142,5 +142,19 @@
 	<script src="js/tkmap.4.0.0.js"></script>
 	<script src="js/infobox.js"></script>
 	<script src="js/main.js"></script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		// @tomkompare Google Analytics tracker.
+		_gaq.push(['_setAccount', 'UA-41885944-1']);
+		_gaq.push(['_trackPageview']);
+		// SCC Google Analytics tracker.
+		//_gaq.push(['scc._setAccount', 'UA-37739534-7']);
+		//_gaq.push(['scc._trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 </body>
 </html>

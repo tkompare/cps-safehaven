@@ -1,6 +1,10 @@
 (function(){
 	// jQuery on document.ready
 	$(function(){
+		if(navigator.geolocation)
+		{
+			$('#findme-span').html('&nbsp;&nbsp;<button id=address-gps class="btn btn-inverse btn-small" type=button>Find Me</button>');
+		}
 		
 		// Default values object
 		var Default = {
@@ -188,6 +192,7 @@
 		});
 		
 		$('body').on('click','#newsearch',function(){
+			_gaq.push(['_trackEvent', 'New Search Button', 'Click']);
 			$('#results').hide();
 			$('#address').show();
 			$('#results').html('');
@@ -217,6 +222,7 @@
 				Map.Map.panTo(Default.SafeHavens[safehavenid].latlng);
 				Map.Map.setZoom(15);
 				Default.SafeHavens[safehavenid].infobox.open(Map.Map,Default.SafeHavens[safehavenid].marker);
+				_gaq.push(['_trackEvent', 'HavenDetails', 'Click', Default.SafeHavens[safehavenid].data.name]);
 			}
 			else
 			{
@@ -238,6 +244,7 @@
 			// Open the results div
 			$('#address').hide();
 			$('#results').show();
+			_gaq.push(['_trackEvent', 'Search Radius', 'Search', $('#address-radius').val()]);
 			// Give me all the search
 			var geocoder = new google.maps.Geocoder();
 			geocoder.geocode(
@@ -248,6 +255,22 @@
 					{
 						if (results[0])
 						{
+							// Mask the exact address before recording
+							var addarray = $('#address-input').val().replace(/^\s\s*/, '').replace(/\s\s*$/, '').split(' ');
+							if(addarray[0].match(/^[0-9]+$/) !== null)
+							{
+								var replacement = addarray[0].substr(0,addarray[0].length-2)+'00';
+								if(replacement !== '00')
+								{
+									addarray[0] = replacement;
+								}
+								else
+								{
+									addarray[0] = '0';
+								}
+							}
+							var maskedAddress = addarray.join(' ');
+							_gaq.push(['_trackEvent', 'Address Found', 'Search', maskedAddress]);
 							if(Default.Circle !== null)
 							{
 								Default.Circle.setCenter(results[0].geometry.location);
@@ -323,6 +346,7 @@
 									resultHTML += '</div>';
 								}
 							}
+							_gaq.push(['_trackEvent', 'Number of Results', 'Search', String(numresults)]);
 							if(numresults > 0)
 							{
 								resultHTML += '</div>';
@@ -350,13 +374,15 @@
 		});
 		
 		// Find me by device gps
-		$('#address-gps').click(function(){
+		$('body').on('click','#address-gps',function(){
+			_gaq.push(['_trackEvent', 'Find Me Button', 'Click']);
 			if(navigator.geolocation)
 			{
 				navigator.geolocation.getCurrentPosition(
 					// Success
 					function(position)
 					{
+						_gaq.push(['_trackEvent', 'GPS Success', 'Aquired From Device']);
 						var latlng = new google.maps.LatLng(
 							position.coords.latitude,
 							position.coords.longitude
