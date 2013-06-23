@@ -234,136 +234,142 @@
 		});
 		
 		$('#address-search').click(function(){
-			// Open the results div
-			$('#address').hide();
-			$('#results').show();
-			_gaq.push(['_trackEvent', 'Search Radius', 'Search', $('#address-radius').val()]);
-			// Give me all the search
-			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode(
-				{address:$('#address-input').val()+', Chicago, Illinois'},
-				function(results, status)
-				{
-					if (status == google.maps.GeocoderStatus.OK)
+			if($('#address-input').val() !== '')
+			{
+				// Open the results div
+				$('#address').hide();
+				$('#results').show();
+				_gaq.push(['_trackEvent', 'Search Radius', 'Search', $('#address-radius').val()]);
+				// Give me all the search
+				var geocoder = new google.maps.Geocoder();
+				geocoder.geocode(
+					{address:$('#address-input').val()+', Chicago, Illinois'},
+					function(results, status)
 					{
-						if (results[0])
+						if (status == google.maps.GeocoderStatus.OK)
 						{
-							// Mask the exact address before recording
-							var addarray = $('#address-input').val().replace(/^\s\s*/, '').replace(/\s\s*$/, '').split(' ');
-							if(addarray[0].match(/^[0-9]+$/) !== null)
+							if (results[0])
 							{
-								var replacement = addarray[0].substr(0,addarray[0].length-2)+'00';
-								if(replacement !== '00')
+								// Mask the exact address before recording
+								var addarray = $('#address-input').val().replace(/^\s\s*/, '').replace(/\s\s*$/, '').split(' ');
+								if(addarray[0].match(/^[0-9]+$/) !== null)
 								{
-									addarray[0] = replacement;
+									var replacement = addarray[0].substr(0,addarray[0].length-2)+'00';
+									if(replacement !== '00')
+									{
+										addarray[0] = replacement;
+									}
+									else
+									{
+										addarray[0] = '0';
+									}
+								}
+								var maskedAddress = addarray.join(' ');
+								_gaq.push(['_trackEvent', 'Address Found', 'Search', maskedAddress]);
+								if(Default.Circle !== null)
+								{
+									Default.Circle.setCenter(results[0].geometry.location);
+									Default.Circle.setRadius(Number($('#address-radius').val()));
 								}
 								else
 								{
-									addarray[0] = '0';
+									google.maps.Circle.prototype.contains = function(latLng) {
+									  return this.getBounds().contains(latLng) && google.maps.geometry.spherical.computeDistanceBetween(this.getCenter(), latLng) <= this.getRadius();
+									};
+									Default.Circle = new google.maps.Circle({
+										center:results[0].geometry.location,
+										clickable:false,
+										fillOpacity:0.075,
+										map:Map.Map,
+										radius:(Number($('#address-radius').val())*1609),
+										strokeWeight:1
+									});
 								}
-							}
-							var maskedAddress = addarray.join(' ');
-							_gaq.push(['_trackEvent', 'Address Found', 'Search', maskedAddress]);
-							if(Default.Circle !== null)
-							{
-								Default.Circle.setCenter(results[0].geometry.location);
-								Default.Circle.setRadius(Number($('#address-radius').val()));
-							}
-							else
-							{
-								google.maps.Circle.prototype.contains = function(latLng) {
-								  return this.getBounds().contains(latLng) && google.maps.geometry.spherical.computeDistanceBetween(this.getCenter(), latLng) <= this.getRadius();
-								};
-								Default.Circle = new google.maps.Circle({
-									center:results[0].geometry.location,
-									clickable:false,
-									fillOpacity:0.075,
-									map:Map.Map,
-									radius:(Number($('#address-radius').val())*1609),
-									strokeWeight:1
-								});
-							}
-							Map.Map.panToBounds(Default.Circle.getBounds());
-							Map.Map.fitBounds(Default.Circle.getBounds());
-							if(Number($('#address-radius').val()) !== 6 && Number($('#address-radius').val()) !== 3)
-							{
-								Map.Map.setZoom((Map.Map.getZoom() + 1));
-							}
-							Default.AddressMarker = new google.maps.Marker({
-								position:results[0].geometry.location,
-								map: Map.Map,
-								icon:'/img/close.gif',
-								clickable:false
-							});
-							Map.Map.panTo(results[0].geometry.location);
-							var numresults = 0;
-							var resultHTML = '';
-							for(var i in Default.SafeHavens)
-							{
-								if(Default.Circle.contains(Default.SafeHavens[i].latlng))
+								Map.Map.panToBounds(Default.Circle.getBounds());
+								Map.Map.fitBounds(Default.Circle.getBounds());
+								if(Number($('#address-radius').val()) !== 6 && Number($('#address-radius').val()) !== 3)
 								{
-									numresults++;
-									if(numresults === 1)
+									Map.Map.setZoom((Map.Map.getZoom() + 1));
+								}
+								Default.AddressMarker = new google.maps.Marker({
+									position:results[0].geometry.location,
+									map: Map.Map,
+									icon:'/img/close.gif',
+									clickable:false
+								});
+								Map.Map.panTo(results[0].geometry.location);
+								var numresults = 0;
+								var resultHTML = '';
+								for(var i in Default.SafeHavens)
+								{
+									if(Default.Circle.contains(Default.SafeHavens[i].latlng))
 									{
-										resultHTML += '<div class=padded><p>This summer\'s program begins on July 1 and runs through August 13, Monday - Friday from 10:00 A.M. - 2:00 P.M. All activities and meals (breakfast and lunch are provided) are <b>free for CPS students</b>.</p></div>';
-										if(Number($('#address-radius').val()) > 1)
+										numresults++;
+										if(numresults === 1)
 										{
-											resultHTML += '<div><h4>Safe Havens within '+$('#address-radius').val()+' miles:</h4></div>';
-										}
-										else
-										{
-											resultHTML += '<div><h4>Safe Havens within '+$('#address-radius').val()+' mile:</h4></div>';
-										}
-										resultHTML += '<div class="accordion" id="accordion">';
-									}
-									resultHTML += '<div class="accordion-group">';
-										resultHTML += '<div class="accordion-heading" style="background-color:#ddd;"><a id="accordion-toggle-'+i+'" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-'+i+'" style="color:#358">';
-											resultHTML += Default.SafeHavens[i].data.name+'&nbsp;&nbsp;(more info)';
-										resultHTML += '</a></div>';
-										resultHTML += '<div id="collapse-'+i+'" class="accordion-body collapse"><div class="accordion-inner" style="background-color:#eee;">';
-											resultHTML += Default.SafeHavens[i].data.pastor+'<br>';
-											resultHTML += Default.SafeHavens[i].data.address+'<br>Chicago, IL '+Default.SafeHavens[i].data.postalcode+'<br>';
-											var phone = String(Default.SafeHavens[i].data.phone).replace(/[^0-9]/g,'');
-											var phonetext = '';
-											if(Default.isPhone)
+											resultHTML += '<div class=padded><p>This summer\'s program begins on July 1 and runs through August 13, Monday - Friday from 10:00 A.M. - 2:00 P.M. All activities and meals (breakfast and lunch are provided) are <b>free for CPS students</b>.</p></div>';
+											if(Number($('#address-radius').val()) > 1)
 											{
-												phonetext = '<a id="'+Default.SafeHavens[i].data.name+' '+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'" href="tel:+1'+phone.slice(-10)+'" style="color:#f87217"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
+												resultHTML += '<div><h4>Safe Havens within '+$('#address-radius').val()+' miles:</h4></div>';
 											}
 											else
 											{
-												phonetext = phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4);
+												resultHTML += '<div><h4>Safe Havens within '+$('#address-radius').val()+' mile:</h4></div>';
 											}
-											resultHTML += phonetext+'<br>';
-											resultHTML += '<small>(call for registration information)</small>';
-										resultHTML += '</div></div>';
+											resultHTML += '<div class="accordion" id="accordion">';
+										}
+										resultHTML += '<div class="accordion-group">';
+											resultHTML += '<div class="accordion-heading" style="background-color:#ddd;"><a id="accordion-toggle-'+i+'" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-'+i+'" style="color:#358">';
+												resultHTML += Default.SafeHavens[i].data.name+'&nbsp;&nbsp;(more info)';
+											resultHTML += '</a></div>';
+											resultHTML += '<div id="collapse-'+i+'" class="accordion-body collapse"><div class="accordion-inner" style="background-color:#eee;">';
+												resultHTML += Default.SafeHavens[i].data.pastor+'<br>';
+												resultHTML += Default.SafeHavens[i].data.address+'<br>Chicago, IL '+Default.SafeHavens[i].data.postalcode+'<br>';
+												var phone = String(Default.SafeHavens[i].data.phone).replace(/[^0-9]/g,'');
+												var phonetext = '';
+												if(Default.isPhone)
+												{
+													phonetext = '<a id="'+Default.SafeHavens[i].data.name+' '+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'" href="tel:+1'+phone.slice(-10)+'" style="color:#f87217"><u>'+phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4)+'</u></a>';
+												}
+												else
+												{
+													phonetext = phone.slice(-10,-7)+'-'+phone.slice(-7,-4)+'-'+phone.slice(-4);
+												}
+												resultHTML += phonetext+'<br>';
+												resultHTML += '<small>(call for registration information)</small>';
+											resultHTML += '</div></div>';
+										resultHTML += '</div>';
+									}
+								}
+								_gaq.push(['_trackEvent', 'Number of Results', 'Search', String(numresults)]);
+								if(numresults > 0)
+								{
 									resultHTML += '</div>';
 								}
-							}
-							_gaq.push(['_trackEvent', 'Number of Results', 'Search', String(numresults)]);
-							if(numresults > 0)
-							{
-								resultHTML += '</div>';
+								else
+								{
+									resultHTML += '<h4>We\'re sorry. We could locate a Safe Haven location within your search radius. Try increasing distance.</h4>';
+								}
+								resultHTML += '<div class=marginb2><button id=newsearch class="btn btn-warning btn-small">New Search</button></div>';
+								$('#results').html(resultHTML);
+								document.getElementById('before-map-fluid').scrollIntoView();
 							}
 							else
 							{
-								resultHTML += '<h4>We\'re sorry. We could locate a Safe Haven location within your search radius. Try increasing distance.</h4>';
+								alert('Sorry! We couldn\'t find that address.');
 							}
-							resultHTML += '<div class=marginb2><button id=newsearch class="btn btn-warning btn-small">New Search</button></div>';
-							$('#results').html(resultHTML);
-							document.getElementById('before-map-fluid').scrollIntoView();
 						}
 						else
 						{
 							alert('Sorry! We couldn\'t find that address.');
 						}
 					}
-					else
-					{
-						alert('Sorry! We couldn\'t find that address.');
-					}
-				}
-			);
-			
+				);
+			}
+			else
+			{
+				alert("Please enter an address so we know where to center our search.");
+			}
 		});
 		
 		// Find me by device gps
