@@ -233,6 +233,7 @@
 			}
 		});
 		
+		// Search button listener
 		$('#address-search').click(function(){
 			if($('#address-input').val() !== '')
 			{
@@ -250,22 +251,6 @@
 						{
 							if (results[0])
 							{
-								// Mask the exact address before recording
-								var addarray = $('#address-input').val().replace(/^\s\s*/, '').replace(/\s\s*$/, '').split(' ');
-								if(addarray[0].match(/^[0-9]+$/) !== null)
-								{
-									var replacement = addarray[0].substr(0,addarray[0].length-2)+'00';
-									if(replacement !== '00')
-									{
-										addarray[0] = replacement;
-									}
-									else
-									{
-										addarray[0] = '0';
-									}
-								}
-								var maskedAddress = addarray.join(' ');
-								_gaq.push(['_trackEvent', 'Address Found', 'Search', maskedAddress]);
 								if(Default.Circle !== null)
 								{
 									Default.Circle.setCenter(results[0].geometry.location);
@@ -353,6 +338,31 @@
 								resultHTML += '<div class=marginb2><button id=newsearch class="btn btn-warning btn-small">New Search</button></div>';
 								$('#results').html(resultHTML);
 								document.getElementById('before-map-fluid').scrollIntoView();
+								if(results[0].geometry.location_type === 'APPROXIMATE')
+								{
+									alert('Sorry. We had a hard time locating you. Your search might not be centered properly');
+								}
+								else
+								{
+									// Mask the exact address before recording
+									// Example: '1456 W Greenleaf Ave' becomes '1400 W Greenleaf Ave'
+									var addarray = $.trim($('#address-input').val()).split(' ');
+									// Chicago addresses start with numbers. So look for them and mask them.
+									if(addarray[0].match(/^[0-9]+$/) !== null)
+									{
+										var replacement = addarray[0].substr(0,addarray[0].length-2)+'00';
+										if(replacement !== '00')
+										{
+											addarray[0] = replacement;
+										}
+										else
+										{
+											addarray[0] = '0';
+										}
+									}
+									var maskedAddress = addarray.join(' ');
+									_gaq.push(['_trackEvent', 'Address Found', 'Search', maskedAddress]);
+								}
 							}
 							else
 							{
